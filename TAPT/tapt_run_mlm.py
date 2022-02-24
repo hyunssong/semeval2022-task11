@@ -42,7 +42,7 @@ import tensorflow as tf
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
-#TAPT Option : CHANGE ACCORDINGLY BY THE MODEL YOU WANT TO CONDUCT TAPT
+#TAPT Option : Please select the tokenizer accordingly to the model you would like to continue task adaptive pretraining
 # if pretrained_model == "kobert":
 #     PRETRAINED = "monologg/kobert"
 #     from kobert_transformers import get_tokenizer
@@ -54,7 +54,7 @@ from sklearn.model_selection import train_test_split
 #     tokenizer = AutoTokenizer.from_pretrained('klue/roberta-large', do_lower_case=False)
 #     PRETRAINED = "klue/roberta-large"
 # elif pretrained_model == "koelectra":
-#   please refer to the original repo for continued pretraining : https://github.com/monologg/KoELECTRA/tree/master/pretrain 
+#   please refer to the original repo for continued pretraining : https://github.com/monologg/KoELECTRA/tree/master/pretrain
 
 import transformers
 
@@ -585,7 +585,6 @@ def main():
             logger.info("Training new model from scratch")
             model = TFAutoModelForMaskedLM.from_config(config)
 
-        tokenizer = get_tokenizer()
         model.resize_token_embeddings(len(tokenizer))
         # endregion
 
