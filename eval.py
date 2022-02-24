@@ -209,3 +209,5 @@ def main():
         model.load_weights(args.model_dir)
 
     write_prediction(args.data_dir, model ,tokenizer,args.output_dir, args.max_seq_length)
+if __name__ == '__main__':
+    main()
