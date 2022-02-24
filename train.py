@@ -109,7 +109,7 @@ def tokenize_and_align_labels(FILENAME,tokenizer, MAX_LENGTH=256):
   return train_features, train_labels
 
 
-def train_model(PRETRAINED,WEIGHTS,tokenizer,DATA_DIR,learning_rate=5e-5,epochs=3,batch_size=16):
+def train_model(PRETRAINED,OUTPUT_DIR,tokenizer,DATA_DIR,learning_rate=5e-5,epochs=3,batch_size=16):
   TRAIN_DIR = os.path.join(DATA_DIR,"ko_train.conll")
   DEV_DIR = os.path.join(DATA_DIR,"ko_dev.conll")
 
@@ -143,7 +143,7 @@ def train_model(PRETRAINED,WEIGHTS,tokenizer,DATA_DIR,learning_rate=5e-5,epochs=
     metrics=tf.metrics.SparseCategoricalAccuracy(),
   )
   
-  logdir = os.path.join("logs", WEIGHTS)
+  logdir = os.path.join(OUTPUT_DIR,"logs" )
   tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1, write_graph=True, write_grads=True, write_images=True )
   es_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
 
@@ -151,9 +151,9 @@ def train_model(PRETRAINED,WEIGHTS,tokenizer,DATA_DIR,learning_rate=5e-5,epochs=
         [dev_features["input_ids"], dev_features["attention_mask"]],
         dev_labels
     ),batch_size=batch_size, epochs=epochs,verbose=1, callbacks=[tensorboard_callback,es_callback])
-
+  WEIGHTS = os.path.join(OUTPUT_DIR,"trained_model" )
   model.save_weights(WEIGHTS)
-  return model
+ 
 
 
 def main():
@@ -176,20 +176,17 @@ def main():
                     help="The maximum total input sequence length for tokenization.")
 
   parser.add_argument("--train_batch_size",
-                      default=64,
+                      default=16,
                       type=int,
                       help="Batch size for training.")
-  parser.add_argument("--create_chunks",
-                      default=1000,
-                      type=int,
-                      help="In order to avoid the out of cpu memory, if your number of sentences is greater than this, divide it into groups")
+
   parser.add_argument("--learning_rate",
                       default=5e-5,
                       type=float,
                       help="The initial learning rate used in training.")
   parser.add_argument("--num_train_epochs",
                       default=3.0,
-                      type=float,
+                      type=int,
                       help="Number of epochs used in training")
 
   parser.add_argument("--output_dir",
@@ -199,6 +196,7 @@ def main():
                       help="Output directory where model will be saved")
   args = parser.parse_args()
 
+ 
 
   if args.pretrained_model == "koelectra":
     tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-base-v3-discriminator")
