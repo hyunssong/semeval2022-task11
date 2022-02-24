@@ -55,6 +55,9 @@ def get_to_replace_NE(DATASET,ne_type):
             if cnt>2:
                 if "조선" not in country and "대한민국" not in country: #exclude 조선인민주의공화국 and 대한민국
                     to_be_replaced[country]=mentioned_nes[country]
+    elif ne_type =="per":
+        for country, cnt in ne_cnt.items():
+            to_be_replaced[country]=mentioned_nes[country]
     
     return to_be_replaced, candidate_nes
 
