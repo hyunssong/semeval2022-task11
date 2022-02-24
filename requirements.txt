@@ -1,0 +1,4 @@
+transformers>=4.6.12
+kobert-transformers
+tf-models-official==2.4.0
+tensorboard
